@@ -31,7 +31,7 @@ fi
 # 换源完美解决
 # 安装pip所需依赖
 #pip install --upgrade setuptools -i https://pypi.tuna.tsinghua.edu.cn/simple
-pip install --ignore-installed wrapt -i https://pypi.tuna.tsinghua.edu.cn/simple
+pip install --ignore-installed wrapt https://pypi.tuna.tsinghua.edu.cn/simple
 # 安装pip最新版
 pip install -U pip -i https://pypi.tuna.tsinghua.edu.cn/simple
 # 根据 requirements.txt 里的记录安装 pip package，确保所有版本之间的兼容性
@@ -48,6 +48,24 @@ sudo mysql -u root << EOF
 EOF
 # fi
 
+# superuser名字
+USER="admin"
+# superuser密码
+PASS="admin"
+# superuser邮箱
+MAIL="admin@twitter.com"
+script="
+from django.contrib.auth.models import User;
+username = '$USER';
+password = '$PASS';
+email = '$MAIL';
+if not User.objects.filter(username=username).exists():
+ User.objects.create_superuser(username, email, password);
+ print('Superuser created.');
+else:
+ print('Superuser creation skipped.');
+"
+printf "$script" | python manage.py shell
 
 # 如果想直接进入/vagrant路径下
 # 请输入vagrant ssh命令进入
