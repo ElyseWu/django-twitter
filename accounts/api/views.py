@@ -41,17 +41,18 @@ class AccountViewSet(viewsets.ViewSet):
         serializer = SignupSerializer(data=request.data)
         if not serializer.is_valid():
             return Response({
-            'success': False,
-            'message': "Please check input",
-            'errors': serializer.errors,
+                'success': False,
+                'message': "Please check input",
+                'errors': serializer.errors,
              }, status=400)
         user = serializer.save()
+        # user.profile
         django_login(request, user)
 
         return Response({
             'success': True,
             'user': UserSerializer(user).data,
-        })
+        }, status=201)
 
     @action(methods=['POST'], detail=False)
     def login(self, request):
@@ -61,9 +62,9 @@ class AccountViewSet(viewsets.ViewSet):
         serializer = LoginSerializer(data=request.data)
         if not serializer.is_valid():
             return Response({
-            "success": False,
-            "message": "Please check input",
-            "errors": serializer.errors,
+                "success": False,
+                "message": "Please check input",
+                "errors": serializer.errors,
              }, status=400)
 
         username = serializer.validated_data['username']
@@ -72,8 +73,8 @@ class AccountViewSet(viewsets.ViewSet):
 
         if not user or user.is_anonymous:
             return Response({
-            "success": False,
-            "message": "username and password does not match",
+                "success": False,
+                "message": "username and password does not match",
              }, status=400)
         django_login(request, user)
 
